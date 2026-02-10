@@ -1,0 +1,2 @@
+# UseCase
+teen selainkäyttöiselle äänestyssovellukselle käyttötapauskaavion
