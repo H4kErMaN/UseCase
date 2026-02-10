@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Äänestyssovellus – Käyttötapauskaavio</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f5f5f5;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .diagram-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+            padding: 32px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="diagram-container">
+        <h1>Äänestyssovellus – UML-käyttötapauskaavio</h1>
+        <svg width="820" height="520" viewBox="0 0 820 520" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <style>
+                    .system-boundary {
+                        fill: #fafbff;
+                        stroke: #333;
+                        stroke-width: 2;
+                    }
+                    .system-label {
+                        font-family: 'Segoe UI', Arial, sans-serif;
+                        font-size: 18px;
+                        font-weight: bold;
+                        fill: #222;
+                    }
+                    .use-case-ellipse {
+                        fill: #e8f0fe;
+                        stroke: #333;
+                        stroke-width: 1.5;
+                    }
+                    .use-case-text {
+                        font-family: 'Segoe UI', Arial, sans-serif;
+                        font-size: 14px;
+                        fill: #222;
+                        text-anchor: middle;
+                        dominant-baseline: central;
+                    }
+                    .actor-line {
+                        stroke: #333;
+                        stroke-width: 2;
+                        stroke-linecap: round;
+                    }
+                    .actor-head {
+                        fill: none;
+                        stroke: #333;
+                        stroke-width: 2;
+                    }
+                    .actor-label {
+                        font-family: 'Segoe UI', Arial, sans-serif;
+                        font-size: 14px;
+                        fill: #222;
+                        text-anchor: middle;
+                        font-weight: bold;
+                    }
+                    .association {
+                        stroke: #555;
+                        stroke-width: 1.5;
+                        fill: none;
+                    }
+                </style>
+            </defs>
+
+            <rect x="210" y="30" width="400" height="460" rx="6" class="system-boundary"/>
+            <text x="410" y="62" class="system-label" text-anchor="middle">Äänestyssovellus</text>
+
+            <ellipse cx="410" cy="140" rx="140" ry="35" class="use-case-ellipse"/>
+            <text x="410" y="140" class="use-case-text">Selata äänestystuloksia</text>
+
+            <ellipse cx="410" cy="240" rx="140" ry="35" class="use-case-ellipse"/>
+            <text x="410" y="240" class="use-case-text">Äänestää äänestyksessä</text>
+
+            <ellipse cx="410" cy="340" rx="140" ry="35" class="use-case-ellipse"/>
+            <text x="410" y="340" class="use-case-text">Luoda uusi äänestys</text>
+
+            <ellipse cx="410" cy="440" rx="140" ry="35" class="use-case-ellipse"/>
+            <text x="410" y="440" class="use-case-text">Poistaa äänestys</text>
+
+            <circle cx="80" cy="160" r="16" class="actor-head"/>
+            
+            <line x1="80" y1="176" x2="80" y2="215" class="actor-line"/>
+            
+            <line x1="55" y1="192" x2="105" y2="192" class="actor-line"/>
+            
+            <line x1="80" y1="215" x2="58" y2="248" class="actor-line"/>
+            
+            <line x1="80" y1="215" x2="102" y2="248" class="actor-line"/>
+            
+            <text x="80" y="272" class="actor-label">Käyttäjä</text>
+
+              
+
+            <circle cx="740" cy="310" r="16" class="actor-head"/>
+           
+            <line x1="740" y1="326" x2="740" y2="365" class="actor-line"/>
+            
+            <line x1="715" y1="342" x2="765" y2="342" class="actor-line"/>
+            
+            <line x1="740" y1="365" x2="718" y2="398" class="actor-line"/>
+            
+            <line x1="740" y1="365" x2="762" y2="398" class="actor-line"/>
+            
+            <text x="740" y="422" class="actor-label">Ylläpitäjä</text>
+
+
+            <line x1="110" y1="190" x2="270" y2="140" class="association"/>
+
+            <line x1="110" y1="210" x2="270" y2="240" class="association"/>
+
+            <line x1="710" y1="340" x2="550" y2="340" class="association"/>
+
+            <line x1="710" y1="370" x2="550" y2="440" class="association"/>
+
+        </svg>
+    </div>
+</body>
+</html>
