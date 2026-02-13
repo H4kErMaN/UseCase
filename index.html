@@ -3,136 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Äänestyssovellus – Käyttötapauskaavio</title>
-    <style>
-        body {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: #f5f5f5;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-        .diagram-container {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.10);
-            padding: 32px;
-        }
-        h1 {
-            text-align: center;
-            font-size: 1.3rem;
-            color: #333;
-            margin-bottom: 16px;
-        }
-    </style>
+    <title>Äänestyssovellus</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="diagram-container">
-        <h1>Äänestyssovellus – UML-käyttötapauskaavio</h1>
-        <svg width="820" height="520" viewBox="0 0 820 520" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <style>
-                    .system-boundary {
-                        fill: #fafbff;
-                        stroke: #333;
-                        stroke-width: 2;
-                    }
-                    .system-label {
-                        font-family: 'Segoe UI', Arial, sans-serif;
-                        font-size: 18px;
-                        font-weight: bold;
-                        fill: #222;
-                    }
-                    .use-case-ellipse {
-                        fill: #e8f0fe;
-                        stroke: #333;
-                        stroke-width: 1.5;
-                    }
-                    .use-case-text {
-                        font-family: 'Segoe UI', Arial, sans-serif;
-                        font-size: 14px;
-                        fill: #222;
-                        text-anchor: middle;
-                        dominant-baseline: central;
-                    }
-                    .actor-line {
-                        stroke: #333;
-                        stroke-width: 2;
-                        stroke-linecap: round;
-                    }
-                    .actor-head {
-                        fill: none;
-                        stroke: #333;
-                        stroke-width: 2;
-                    }
-                    .actor-label {
-                        font-family: 'Segoe UI', Arial, sans-serif;
-                        font-size: 14px;
-                        fill: #222;
-                        text-anchor: middle;
-                        font-weight: bold;
-                    }
-                    .association {
-                        stroke: #555;
-                        stroke-width: 1.5;
-                        fill: none;
-                    }
-                </style>
-            </defs>
 
-            <rect x="210" y="30" width="400" height="460" rx="6" class="system-boundary"/>
-            <text x="410" y="62" class="system-label" text-anchor="middle">Äänestyssovellus</text>
-
-            <ellipse cx="410" cy="140" rx="140" ry="35" class="use-case-ellipse"/>
-            <text x="410" y="140" class="use-case-text">Selata äänestystuloksia</text>
-
-            <ellipse cx="410" cy="240" rx="140" ry="35" class="use-case-ellipse"/>
-            <text x="410" y="240" class="use-case-text">Äänestää äänestyksessä</text>
-
-            <ellipse cx="410" cy="340" rx="140" ry="35" class="use-case-ellipse"/>
-            <text x="410" y="340" class="use-case-text">Luoda uusi äänestys</text>
-
-            <ellipse cx="410" cy="440" rx="140" ry="35" class="use-case-ellipse"/>
-            <text x="410" y="440" class="use-case-text">Poistaa äänestys</text>
-
-            <circle cx="80" cy="160" r="16" class="actor-head"/>
-            
-            <line x1="80" y1="176" x2="80" y2="215" class="actor-line"/>
-            
-            <line x1="55" y1="192" x2="105" y2="192" class="actor-line"/>
-            
-            <line x1="80" y1="215" x2="58" y2="248" class="actor-line"/>
-            
-            <line x1="80" y1="215" x2="102" y2="248" class="actor-line"/>
-            
-            <text x="80" y="272" class="actor-label">Käyttäjä</text>
-
-              
-
-            <circle cx="740" cy="310" r="16" class="actor-head"/>
-           
-            <line x1="740" y1="326" x2="740" y2="365" class="actor-line"/>
-            
-            <line x1="715" y1="342" x2="765" y2="342" class="actor-line"/>
-            
-            <line x1="740" y1="365" x2="718" y2="398" class="actor-line"/>
-            
-            <line x1="740" y1="365" x2="762" y2="398" class="actor-line"/>
-            
-            <text x="740" y="422" class="actor-label">Ylläpitäjä</text>
-
-
-            <line x1="110" y1="190" x2="270" y2="140" class="association"/>
-
-            <line x1="110" y1="210" x2="270" y2="240" class="association"/>
-
-            <line x1="710" y1="340" x2="550" y2="340" class="association"/>
-
-            <line x1="710" y1="370" x2="550" y2="440" class="association"/>
-
-        </svg>
+<nav>
+    <h1>Äänestyssovellus</h1>
+    <div>
+        <label>
+            <input type="checkbox" id="admin-toggle"> Ylläpitäjä
+        </label>
     </div>
+</nav>
+
+<div id="app"></div>
+
+<!-- Poiston vahvistus -->
+<div class="overlay" id="delete-overlay">
+    <div class="modal-box">
+        <h3>Vahvista poistaminen</h3>
+        <p>Haluatko varmasti poistaa tämän äänestyksen?</p>
+        <div class="buttons">
+            <button class="btn btn-secondary" onclick="closeDeleteModal()">Peruuta</button>
+            <button class="btn btn-danger" onclick="doDelete()">Poista</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Tila
+let polls = [
+    {
+        id: 1,
+        title: "Mikä on paras ohjelmointikieli?",
+        options: [
+            { name: "Python", votes: 12 },
+            { name: "JavaScript", votes: 9 },
+            { name: "Java", votes: 5 },
+            { name: "C#", votes: 7 }
+        ]
+    },
+    {
+        id: 2,
+        title: "Paras vuodenaika?",
+        options: [
+            { name: "Kevät", votes: 4 },
+            { name: "Kesä", votes: 15 },
+            { name: "Syksy", votes: 6 },
+            { name: "Talvi", votes: 3 }
+        ]
+    },
+    {
+        id: 3,
+        title: "Etätyö vai lähityö?",
+        options: [
+            { name: "Etätyö", votes: 0 },
+            { name: "Lähityö", votes: 0 },
+            { name: "Hybridityö", votes: 0 }
+        ]
+    }
+];
+
+let nextId = 4;
+let votedPolls = new Set();
+let isAdmin = false;
+let view = "list";
+let currentPoll = null;
+let selectedOption = null;
+let deleteTargetId = null;
+
+const app = document.getElementById("app");
+
+document.getElementById("admin-toggle").addEventListener("change", function() {
+    isAdmin = this.checked;
+    render();
+});
+
+// Ilmoitus
+function showToast(msg, type) {
+    const t = document.createElement("div");
+    t.className = "toast " + (type || "success");
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2500);
+}
+
+// Poisto-modaali
+function openDeleteModal(id) {
+    deleteTargetId = id;
+    document.getElementById("delete-overlay").classList.add("active");
+}
+
+function closeDeleteModal() {
+    deleteTargetId = null;
+    document.getElementById("delete-overlay").classList.remove("active");
+}
+
+function doDelete() {
+    polls = polls.filter(p => p.id !== deleteTargetId);
+    closeDeleteModal();
+    showToast("Äänestys poistettu", "danger");
+    render();
+}
+
+// Navigointi
+function goList() { view = "list"; selectedOption = null; render(); }
+function goVote(id) { view = "vote"; currentPoll = id; selectedOption = null; render(); }
+function goResults(id) { view = "results"; currentPoll = id; render(); }
+function goCreate() { view = "create"; render(); }
+
+// Äänestä
+function selectOption(i) { selectedOption = i; render(); }
+
+function submitVote() {
+    if (selectedOption === null) {
+        showToast("Valitse vaihtoehto ennen äänestämistä", "warning");
+        return;
+    }
+    const poll = polls.find(p => p.id === currentPoll);
+    if (!poll) return;
+    poll.options[selectedOption].votes++;
+    votedPolls.add(poll.id);
+    showToast("Äänesi on tallennettu!");
+    goResults(poll.id);
+}
+
+// Luo äänestys
+function addOptionField() {
+    const c = document.getElementById("options-container");
+    const n = c.querySelectorAll("input").length + 1;
+    const row = document.createElement("div");
+    row.className = "option-input-row";
+    row.innerHTML = '<input type="text" placeholder="Vaihtoehto ' + n + '"><button class="btn" onclick="removeOptionField(this)">X</button>';
+    c.appendChild(row);
+}
+
+function removeOptionField(btn) {
+    const c = document.getElementById("options-container");
+    if (c.querySelectorAll(".option-input-row").length > 2) {
+        btn.parentElement.remove();
+    } else {
+        showToast("Vähintään kaksi vaihtoehtoa", "warning");
+    }
+}
+
+function submitCreate() {
+    const title = document.getElementById("poll-title").value.trim();
+    const errEl = document.getElementById("create-error");
+    errEl.textContent = "";
+
+    if (!title) { errEl.textContent = "Syötä äänestyksen otsikko."; return; }
+
+    const inputs = document.querySelectorAll("#options-container input");
+    const names = [];
+    inputs.forEach(inp => { if (inp.value.trim()) names.push(inp.value.trim()); });
+
+    if (names.length < 2) { errEl.textContent = "Lisää vähintään kaksi vaihtoehtoa."; return; }
+
+    polls.push({ id: nextId++, title: title, options: names.map(n => ({ name: n, votes: 0 })) });
+    showToast("Äänestys luotu!");
+    goList();
+}
+
+// Apufunktio
+function esc(s) {
+    const d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+// Piirto
+function render() {
+    if (view === "list") renderList();
+    else if (view === "vote") renderVote();
+    else if (view === "results") renderResults();
+    else if (view === "create") renderCreate();
+}
+
+function renderList() {
+    let h = '<h2>Äänestykset</h2>';
+    if (isAdmin) h += '<button class="btn btn-primary" onclick="goCreate()">+ Luo uusi äänestys</button>';
+
+    if (polls.length === 0) {
+        h += '<p>Ei äänestyksiä.</p>';
+    } else {
+        for (const p of polls) {
+            const total = p.options.reduce((s, o) => s + o.votes, 0);
+            const voted = votedPolls.has(p.id);
+            h += '<div class="poll-card">';
+            h += '<h3>' + esc(p.title) + '</h3>';
+            h += '<p class="info">' + p.options.length + ' vaihtoehtoa, ' + total + ' ääntä</p>';
+            h += '<button class="btn" onclick="goResults(' + p.id + ')">Tulokset</button>';
+            if (!voted) h += '<button class="btn btn-primary" onclick="goVote(' + p.id + ')">Äänestä</button>';
+            else h += ' <span style="color:green;">Äänestit</span>';
+            if (isAdmin) h += '<button class="btn btn-danger" onclick="openDeleteModal(' + p.id + ')">Poista</button>';
+            h += '</div>';
+        }
+    }
+    app.innerHTML = h;
+}
+
+function renderVote() {
+    const poll = polls.find(p => p.id === currentPoll);
+    if (!poll) { goList(); return; }
+    if (votedPolls.has(poll.id)) { showToast("Olet jo äänestänyt tässä äänestyksessä", "warning"); goResults(poll.id); return; }
+
+    let h = '<span class="back-link" onclick="goList()">← Takaisin</span>';
+    h += '<h2>' + esc(poll.title) + '</h2>';
+    h += '<p>Valitse vaihtoehto:</p>';
+
+    for (let i = 0; i < poll.options.length; i++) {
+        const sel = selectedOption === i ? " selected" : "";
+        h += '<button class="option-btn' + sel + '" onclick="selectOption(' + i + ')">' + esc(poll.options[i].name) + '</button>';
+    }
+    h += '<br><button class="btn btn-primary" onclick="submitVote()">Äänestä</button>';
+    app.innerHTML = h;
+}
+
+function renderResults() {
+    const poll = polls.find(p => p.id === currentPoll);
+    if (!poll) { goList(); return; }
+    const total = poll.options.reduce((s, o) => s + o.votes, 0);
+
+    let h = '<span class="back-link" onclick="goList()">← Takaisin</span>';
+    h += '<h2>' + esc(poll.title) + '</h2>';
+    h += '<p>Yhteensä ' + total + ' ääntä</p>';
+
+    if (total === 0) {
+        h += '<p>Ei vielä ääniä.</p>';
+    } else {
+        const colors = ["#3498db", "#27ae60", "#f39c12", "#e74c3c", "#9b59b6", "#e67e22"];
+        for (let i = 0; i < poll.options.length; i++) {
+            const o = poll.options[i];
+            const pct = ((o.votes / total) * 100).toFixed(1);
+            h += '<div class="result-row">';
+            h += '<div class="label"><span>' + esc(o.name) + '</span><span>' + o.votes + ' ääntä (' + pct + ' %)</span></div>';
+            h += '<div class="bar-bg"><div class="bar-fill" style="width:' + pct + '%;background:' + colors[i % colors.length] + ';">' + pct + '%</div></div>';
+            h += '</div>';
+        }
+    }
+    app.innerHTML = h;
+}
+
+function renderCreate() {
+    let h = '<span class="back-link" onclick="goList()">← Takaisin</span>';
+    h += '<h2>Luo uusi äänestys</h2>';
+    h += '<div class="form-group"><label>Otsikko</label><input type="text" id="poll-title" placeholder="Kirjoita otsikko..."></div>';
+    h += '<div class="form-group"><label>Vaihtoehdot</label>';
+    h += '<div id="options-container">';
+    h += '<div class="option-input-row"><input type="text" placeholder="Vaihtoehto 1"><button class="btn" onclick="removeOptionField(this)">X</button></div>';
+    h += '<div class="option-input-row"><input type="text" placeholder="Vaihtoehto 2"><button class="btn" onclick="removeOptionField(this)">X</button></div>';
+    h += '</div>';
+    h += '<button class="btn" onclick="addOptionField()">+ Lisää vaihtoehto</button></div>';
+    h += '<div class="error-msg" id="create-error"></div>';
+    h += '<button class="btn btn-primary" onclick="submitCreate()">Luo äänestys</button>';
+    app.innerHTML = h;
+}
+
+render();
+</script>
+
 </body>
 </html>
